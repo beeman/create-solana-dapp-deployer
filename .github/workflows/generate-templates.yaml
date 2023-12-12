@@ -1,0 +1,25 @@
+name: Run Bash Script
+
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Runs at midnight UTC
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Remove .git folder
+        run: rm -rf .git
+      - name: Set up Git config
+        run: |
+          git config --global user.name 'Solana Developers'
+          git config --global user.email 'no-reply@solana.org'
+      - name: Run script
+        run: bash generate-templates.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
