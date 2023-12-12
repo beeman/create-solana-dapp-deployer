@@ -3,7 +3,7 @@
 # Define workspace and base variables
 WORKSPACE_ROOT="${WORKSPACE_ROOT:-$(pwd)/workspace}"
 BASE_PREFIX="solana-dapp-"
-BASE_REPO="https://github.com/beeman/"
+BASE_REPO="git@github.com:beeman/"
 BASE_COMMAND="npx --yes create-solana-dapp@next"
 
 # Function to get template ID
@@ -31,7 +31,7 @@ fi
 for preset in "${presets[@]}"; do
     for ui in "${uis[@]}"; do
         id=$(get_template_id "$preset" "$ui")
-        repo="${BASE_REPO}${id}"
+        repo="${BASE_REPO}${id}.git"
         target_dir="${WORKSPACE_ROOT}/${id}"
         command="${BASE_COMMAND} ${id} --preset ${preset} --ui ${ui} --anchor counter --yarn"
 
@@ -49,8 +49,10 @@ for preset in "${presets[@]}"; do
             echo "Pushing template... $id to $repo"
             (cd "$target_dir" && git push -u origin main --force)
 
-            echo "Removing remote... $repo $target_dir"
-            (cd "$target_dir" && git remote remove origin)
+            if [[ $? -ne 0 ]]; then
+                echo "Failed to push template... $id to $repo"
+                exit 1
+            fi
         else
             echo "Skipping template... $id, already exists in $WORKSPACE_ROOT"
         fi

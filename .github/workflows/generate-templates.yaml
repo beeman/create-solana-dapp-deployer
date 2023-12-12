@@ -1,4 +1,4 @@
-name: Run Bash Script
+name: Generate templates
 
 
 on:
@@ -19,7 +19,7 @@ jobs:
         run: |
           git config --global user.name 'Solana Developers'
           git config --global user.email 'no-reply@solana.org'
-      - name: Run script
+      - name: Generate templates
         run: bash generate-templates.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
